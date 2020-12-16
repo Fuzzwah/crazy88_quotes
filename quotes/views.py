@@ -1,4 +1,5 @@
 from random import choice
+import re
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
@@ -26,7 +27,10 @@ def random_quote(request):
 @permission_classes([])
 def get_quote(request):
     print(request.body, flush=True)
-    print(str(request.body).split('&'), flush=True)
+    m = re.match(r'&text=([0-9]+?)&', request.body)
+    if m:
+        quote_id = m.group(1)
+    print(quote_id, flush=True)
 
     pks = Quote.objects.values_list('pk', flat=True).order_by('id')
     random_pk = choice(pks)
