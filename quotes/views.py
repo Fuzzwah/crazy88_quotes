@@ -17,6 +17,7 @@ from rest_framework.renderers import JSONRenderer
 
 class SlackSingleQuoteRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
+        print(data)
         data = {
             "response_type": "in_channel",
             "text": f"Quote #{data[0]['id']}",
