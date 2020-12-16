@@ -25,7 +25,6 @@ def random_quote(request):
 @authentication_classes([])
 @permission_classes([])
 def get_quote(request):
-    print(request.body, flush=True)
     payload_list = str(request.body).split('&')
     for item in payload_list:
         key, val = item.split('=')
@@ -33,11 +32,7 @@ def get_quote(request):
             quote_id = val
             break
 
-    print(quote_id, flush=True)
-
-    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
-    random_pk = choice(pks)
-    quote = Quote.objects.all().filter(id=random_pk)
+    quote = Quote.objects.all().filter(id=quote_id)
     serializer = QuoteSerializer(quote, many=True)
     data = {
         "response_type": "in_channel",
