@@ -57,15 +57,9 @@ def random_quote(request):
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
-def get_quote(request, id):
-    quote = Quote.objects.all().filter(id=id)
-    serializer = QuoteSerializer(quote, many=True)
-    data = {
-        "response_type": "in_channel",
-        "text": f"Quote #{serializer.data[0]['id']}",
-        "attachments": [{"text": serializer.data[0]['text']}]
-    }
-    return JsonResponse(data)
+def get_quote(request):
+
+    return JsonResponse(request)
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = []
