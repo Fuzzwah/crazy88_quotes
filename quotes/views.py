@@ -46,13 +46,15 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RandomQuoteView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
+    queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
         pks = Quote.objects.values_list('pk', flat=True).order_by('id')
         random_pk = choice(pks)
 
-        return Quote.objects.get(pk=random_pk)
+        return self.queryset.filter(id=random_pk)
+
 
 class QuoteView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
