@@ -37,10 +37,12 @@ def test(request):
 def index(request):
     return HttpResponse("Hi there.")
 
+
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
+
 
 class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -49,3 +51,12 @@ class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self, *args, **kwargs):
         return self.queryset.first()
+
+
+class QuoteView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Quote.objects.all()
+    serializer_class = QuoteSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        return self.queryset.filter(id=self.kwargs.get('id'))
