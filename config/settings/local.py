@@ -11,7 +11,7 @@ SECRET_KEY = env(
     default="0085TTi7cbEgWr2kxITb0vKSQV5q39PvhEOFnjM16XA9C1MZmz9OYyVhlRPg8yUr",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["crazy88-quotes.fuzzwah.com"]
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["crazy88-quotes.fuzzwah.com"])
 
 # CACHES
 # ------------------------------------------------------------------------------
