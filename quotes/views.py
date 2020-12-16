@@ -27,7 +27,7 @@ def random_quote(request):
 @permission_classes([])
 def get_quote(request):
     print(request.body, flush=True)
-    m = re.match(r'&text=([0-9]+?)&', request.body)
+    m = re.match(r'&text=([0-9]+?)&', str(request.body))
     if m:
         quote_id = m.group(1)
     print(quote_id, flush=True)
