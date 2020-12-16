@@ -44,5 +44,8 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = Quote.objects.order_by('?').first()
+    queryset = Quote.objects.order_by('?')
     serializer_class = QuoteSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        return self.queryset.first()
