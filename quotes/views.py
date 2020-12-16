@@ -12,7 +12,7 @@ from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-import random
+from random import choice
 
 from quotes.serializers import (
     QuoteSerializer,
