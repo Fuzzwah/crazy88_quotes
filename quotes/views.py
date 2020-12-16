@@ -74,7 +74,12 @@ def random_quote(request):
     random_pk = choice(pks)
     quote = Quote.objects.all().filter(id=random_pk)
     serializer = QuoteSerializer(quote, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    data = {
+        "response_type": "in_channel",
+        "text": f"Quote #{data[0]['id']}",
+        "attachments": [{"text": data[0]['text']}]
+    }
+    return JsonResponse(data)
 
 
 class QuoteView(generics.ListAPIView):
