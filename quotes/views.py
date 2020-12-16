@@ -19,8 +19,8 @@ class SlackSingleQuoteRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
         data = {
             "response_type": "in_channel",
-            "text": f"Quote #{data[0]["id"]}",
-            "attachments": [{"text": data[0]["text"]}]
+            "text": f"Quote #{data[0]['id']}",
+            "attachments": [{"text": data[0]['text']}]
         }
         return super(SlackSingleQuoteRenderer, self).render(data, accepted_media_type, renderer_context)
 
