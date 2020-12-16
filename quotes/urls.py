@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url, include, path
 from rest_framework import routers
 from . import views
 
@@ -10,6 +10,7 @@ router.register(r'quotes', views.QuotesViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
+    path('test/', views.test)
     url(r'^random/$', views.RandomQuoteView.as_view(), name='random'),
     url(r'^quote/(?P<id>[0-9]+)/$', views.QuoteView.as_view(), name='quote'),
 ]
