@@ -51,7 +51,41 @@ def get_quote(request):
     except IndexError:
         data = {
             "response_type": "in_channel",
-            "text": f"Quote {quote_id} not found in the database",
+            "text": f"Quote #{quote_id} not found in the database",
+        }
+    return JsonResponse(data)
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def search_quote(request):
+    quote_id = False
+    payload_list = str(request.body).split('&')
+    for item in payload_list:
+        key, val = item.split('=')
+        if key == 'text':
+            search_string = val
+            break
+    if not search_string:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a string to search for!",
+        }
+        return JsonResponse(data)
+
+
+    quote = Quote.objects.all().filter(text__contains=search_string)
+    serializer = QuoteSerializer(quote, many=True)
+    try:
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{serializer.data[0]['id']}",
+            "attachments": [{"text": serializer.data[0]['text']}]
+        }
+    except IndexError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"No quote found containing '{search_string}' in the database",
         }
     return JsonResponse(data)
 
