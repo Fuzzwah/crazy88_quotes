@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import authentication_classes, permission_classes
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
@@ -49,12 +50,17 @@ def index(request):
     return HttpResponse("Hi there.")
 
 
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([IsAuthenticated])
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
 
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 class RandomQuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     queryset = Quote.objects.all()
@@ -67,6 +73,9 @@ class RandomQuoteView(generics.ListAPIView):
         return self.queryset.filter(id=random_pk)
 
 
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     queryset = Quote.objects.all()
