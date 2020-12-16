@@ -14,3 +14,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^quote/(?P<id>[0-9]+)/$', views.QuoteView.as_view(), name='quote'),
 ]
+
+app_name = 'quotes'
