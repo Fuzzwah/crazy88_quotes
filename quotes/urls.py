@@ -12,7 +12,8 @@ router.register(r'quotes', views.QuotesViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     path('test', views.test),
-    url(r'^random/$', views.RandomQuoteView.as_view(), name='random'),
+    #url(r'^random/$', views.RandomQuoteView.as_view(), name='random'),
+    path('random', views.random_quote),
     url(r'^quote/(?P<id>[0-9]+)/$', views.QuoteView.as_view(), name='quote'),
 ]
 

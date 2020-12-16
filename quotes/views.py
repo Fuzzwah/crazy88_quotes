@@ -1,19 +1,19 @@
+from random import choice
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.shortcuts import render
 from django.conf import settings
-from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated
 from django_tables2 import SingleTableView
 from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
-from random import choice
 from rest_framework.renderers import JSONRenderer
+from rest_framework import viewsets, generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 
 class SlackSingleQuoteRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
@@ -66,6 +66,15 @@ class RandomQuoteView(generics.ListAPIView):
         random_pk = choice(pks)
 
         return self.queryset.filter(id=random_pk)
+
+@api_view(['POST'])
+def random_quote(request):
+
+    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
+    random_pk = choice(pks)
+    quote = Quote.objects.all().filter(id=random_pk)
+    serializer = QuoteSerializer(quote, many=True)
+    return Response(serializer.data)
 
 
 @require_POST
