@@ -49,7 +49,6 @@ def index(request):
 
 
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
