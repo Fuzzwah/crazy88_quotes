@@ -1,4 +1,4 @@
-from random import choice, shuffle
+from random import choice
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
@@ -74,13 +74,14 @@ def search_quote(request):
         return JsonResponse(data)
 
 
-    quotes = shuffle(list(Quote.objects.all().filter(text__contains=search_string)))
+    quotes = Quote.objects.all().filter(text__contains=search_string)
     serializer = QuoteSerializer(quotes, many=True)
     try:
+        i = choice(range(len(serializer.data)))
         data = {
             "response_type": "in_channel",
-            "text": f"Quote #{serializer.data[0]['id']}",
-            "attachments": [{"text": serializer.data[0]['text']}]
+            "text": f"Quote #{serializer.data[i]['id']}",
+            "attachments": [{"text": serializer.data[i]['text']}]
         }
     except IndexError:
         data = {
