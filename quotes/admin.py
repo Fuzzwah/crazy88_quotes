@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Quote, History
 
-# Register your models here.
+admin.site.register(Quote)
+admin.site.register(History)
