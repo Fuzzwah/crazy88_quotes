@@ -74,7 +74,8 @@ def search_quote(request):
         return JsonResponse(data)
 
 
-    quote = Quote.objects.all().filter(text__contains=search_string)
+    quotes = Quote.objects.all().filter(text__contains=search_string)
+    quote = choice(quotes)
     serializer = QuoteSerializer(quote, many=True)
     try:
         data = {
