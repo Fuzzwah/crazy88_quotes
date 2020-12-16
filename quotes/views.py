@@ -44,7 +44,7 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = QuoteSerializer
 
 
-class RandomObject(generics.ListAPIView):
+class RandomQuoteView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuoteSerializer
 
