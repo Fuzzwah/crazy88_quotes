@@ -56,7 +56,6 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RandomQuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
-    permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
@@ -69,7 +68,6 @@ class RandomQuoteView(generics.ListAPIView):
 
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
-    permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
