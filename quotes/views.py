@@ -76,8 +76,8 @@ def random_quote(request):
     serializer = QuoteSerializer(quote, many=True)
     data = {
         "response_type": "in_channel",
-        "text": f"Quote #{data[0]['id']}",
-        "attachments": [{"text": data[0]['text']}]
+        "text": f"Quote #{serializer.data[0]['id']}",
+        "attachments": [{"text": serializer.data[0]['text']}]
     }
     return JsonResponse(data)
 
