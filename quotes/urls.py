@@ -10,7 +10,7 @@ router.register(r'quotes', views.QuotesViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^random$', views.RandomQuoteView.as_view(), name='random'),
+    url(r'^random/$', views.RandomQuoteView.as_view(), name='random'),
     url(r'^quote/(?P<id>[0-9]+)/$', views.QuoteView.as_view(), name='quote'),
 ]
 
