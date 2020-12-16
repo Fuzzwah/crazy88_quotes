@@ -25,8 +25,8 @@ def random_quote(request):
 @authentication_classes([])
 @permission_classes([])
 def get_quote(request):
-    print("Logging message", flush=True)
     print(request.body, flush=True)
+    print(request.text, flush=True)
 
     pks = Quote.objects.values_list('pk', flat=True).order_by('id')
     random_pk = choice(pks)
