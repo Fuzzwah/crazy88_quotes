@@ -13,11 +13,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from quotes.serializers import (
-    QuotesSerializer,
+    QuoteSerializer,
 )
 
 from quotes.models import (
-    Quotes,
+    Quote,
 )
 
 def test(request):
@@ -37,5 +37,5 @@ def index(request):
 
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = Quotes.objects.all()
+    queryset = Quote.objects.all()
     serializer_class = QuotesSerializer
