@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     path('test', views.test),
     path('random', views.random_quote),
-    path(r'quote/(?P<id>[0-9]+)'), views.get_quote),
+    path(r'quote/(?P<id>[0-9]+)', views.get_quote),
 ]
 
 app_name = 'quotes'
