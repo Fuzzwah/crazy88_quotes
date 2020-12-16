@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import authentication_classes, permission_classes
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.shortcuts import render
@@ -50,7 +50,7 @@ def index(request):
     return HttpResponse("Hi there.")
 
 
-@api_view(['GET'])
+@require_GET
 @authentication_classes([])
 @permission_classes([IsAuthenticated])
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
@@ -58,7 +58,7 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = QuoteSerializer
 
 
-@api_view(['GET'])
+@require_GET
 @authentication_classes([])
 @permission_classes([])
 class RandomQuoteView(generics.ListAPIView):
@@ -73,7 +73,7 @@ class RandomQuoteView(generics.ListAPIView):
         return self.queryset.filter(id=random_pk)
 
 
-@api_view(['GET'])
+@require_GET
 @authentication_classes([])
 @permission_classes([])
 class QuoteView(generics.ListAPIView):
