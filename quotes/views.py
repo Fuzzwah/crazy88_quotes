@@ -90,3 +90,30 @@ def search_quote(request):
         }
     return JsonResponse(data)
 
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def add_quote(request):
+    payload = dict(item.split("=") for item in str(request.body).split('&'))
+    try:
+        added_by_userid = payload['user_id']
+        added_by_username = payload['user_name']
+        teamid = payload['team_id']
+        quote = payload['text']
+    except KeyError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a quote to add!",
+        }
+        return JsonResponse(data)
+
+    q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
+    q.save()
+
+    data = {
+        "response_type": "in_channel",
+        "text": f"Quote added as #{q.id}",
+    }
+    return JsonResponse(data)
+
+
