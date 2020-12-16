@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from rest_framework.decorators import authentication_classes, permission_classes
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 from django.db import transaction
 from django.shortcuts import render
@@ -18,11 +17,10 @@ from rest_framework.renderers import JSONRenderer
 
 class SlackSingleQuoteRenderer(JSONRenderer):
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        print(data)
         data = {
             "response_type": "in_channel",
-            "text": data,
-            #"attachments": [{"text": data[0]['text']}]
+            "text": f"Quote #{data[0]['id']}",
+            "attachments": [{"text": data[0]['text']}]
         }
         return super(SlackSingleQuoteRenderer, self).render(data, accepted_media_type, renderer_context)
 
@@ -50,19 +48,15 @@ def index(request):
     return HttpResponse("Hi there.")
 
 
-@require_GET
-@authentication_classes([])
-@permission_classes([IsAuthenticated])
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
 
-@require_GET
-@authentication_classes([])
-@permission_classes([])
 class RandomQuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
+    permission_classes = []
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
@@ -73,11 +67,9 @@ class RandomQuoteView(generics.ListAPIView):
         return self.queryset.filter(id=random_pk)
 
 
-@require_GET
-@authentication_classes([])
-@permission_classes([])
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
+    permission_classes = []
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
