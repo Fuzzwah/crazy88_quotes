@@ -4,11 +4,13 @@ from . import views
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'quote', views.QuoteViewSet)
+router.register(r'quotes', views.QuotesViewSet)
+router.register(r'radnom', views.RandomQuoteViewSet)
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-
+    url(r'^quote/(?P<id>[0-9]+)/$', views.QuoteView.as_view(), name='quote'),
 ]

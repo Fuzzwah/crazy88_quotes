@@ -11,6 +11,8 @@ from django_tables2 import SingleTableView
 from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
+import random
 
 from quotes.serializers import (
     QuoteSerializer,
@@ -35,7 +37,12 @@ def test(request):
 def index(request):
     return HttpResponse("Hi there.")
 
-class QuoteViewSet(viewsets.ReadOnlyModelViewSet):
+class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
+    serializer_class = QuoteSerializer
+
+class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Quote.objects.order_by('?').first()
     serializer_class = QuoteSerializer
