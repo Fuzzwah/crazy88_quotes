@@ -57,12 +57,8 @@ def random_quote(request):
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
-def get_quote(request):
-    print(request.data)
-
-    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
-    random_pk = choice(pks)
-    quote = Quote.objects.all().filter(id=random_pk)
+def get_quote(request, id):
+    quote = Quote.objects.all().filter(id=id)
     serializer = QuoteSerializer(quote, many=True)
     data = {
         "response_type": "in_channel",
