@@ -74,7 +74,7 @@ def random_quote(request):
     random_pk = choice(pks)
     quote = Quote.objects.all().filter(id=random_pk)
     serializer = QuoteSerializer(quote, many=True)
-    return Response(serializer.data)
+    return JsonResponse(serializer.data)
 
 
 class QuoteView(generics.ListAPIView):
