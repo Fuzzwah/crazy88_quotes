@@ -13,6 +13,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from random import choice
+from rest_framework.renderers import JSONRenderer
+
+class SlackSingleQuoteRenderer(JSONRenderer):
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{data[0]["id"]}",
+            "attachments": [{"text": data[0]["text"]}]
+        }
+        return super(SlackSingleQuoteRenderer, self).render(data, accepted_media_type, renderer_context)
 
 from quotes.serializers import (
     QuoteSerializer,
@@ -45,6 +55,7 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RandomQuoteView(generics.ListAPIView):
+    renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
@@ -57,6 +68,7 @@ class RandomQuoteView(generics.ListAPIView):
 
 
 class QuoteView(generics.ListAPIView):
+    renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
