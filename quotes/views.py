@@ -59,7 +59,7 @@ def random_quote(request):
 @permission_classes([])
 def get_quote(request):
 
-    return JsonResponse(request)
+    return JsonResponse(request, safe=False)
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = []
