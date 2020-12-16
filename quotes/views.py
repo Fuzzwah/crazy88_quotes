@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from rest_framework.renderers import JSONRenderer
 from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
 
 class SlackSingleQuoteRenderer(JSONRenderer):
@@ -67,6 +67,8 @@ class RandomQuoteView(generics.ListAPIView):
         return self.queryset.filter(id=random_pk)
 
 @api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
 def random_quote(request):
 
     pks = Quote.objects.values_list('pk', flat=True).order_by('id')
