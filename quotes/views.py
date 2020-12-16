@@ -35,7 +35,7 @@ def test(request):
 def index(request):
     return HttpResponse("Hi there.")
 
-class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
+class QuoteViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
