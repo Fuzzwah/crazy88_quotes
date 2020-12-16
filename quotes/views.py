@@ -50,7 +50,7 @@ class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = QuoteSerializer
 
     def get_queryset(self, *args, **kwargs):
-        return self.queryset.first()
+        return self.queryset[0]
 
 
 class QuoteView(generics.ListAPIView):
