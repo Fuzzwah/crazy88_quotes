@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, shuffle
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
@@ -74,9 +74,8 @@ def search_quote(request):
         return JsonResponse(data)
 
 
-    quotes = Quote.objects.all().filter(text__contains=search_string)
-    quote = choice(quotes)
-    serializer = QuoteSerializer(quote, many=True)
+    quotes = shuffle(Quote.objects.all().filter(text__contains=search_string))
+    serializer = QuoteSerializer(quotes, many=True)
     try:
         data = {
             "response_type": "in_channel",
