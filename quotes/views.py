@@ -57,12 +57,8 @@ def random_quote(request):
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
-def get_quote(request):
-
-    return JsonResponse(request.body, safe=False)
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
-    permission_classes = []
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
