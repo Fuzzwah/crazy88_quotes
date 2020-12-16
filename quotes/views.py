@@ -32,38 +32,11 @@ from quotes.models import (
     Quote,
 )
 
-def test(request):
-    resp = {
-        "response_type": "in_channel",
-        "text": "Hello, world",
-            "attachments": [
-                {
-                "text": "Attachment text is here"
-                }
-            ]
-        }
-    return JsonResponse(resp)
-
-def index(request):
-    return HttpResponse("Hi there.")
-
-
 class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
 
-class RandomQuoteView(generics.ListAPIView):
-    renderer_classes = (SlackSingleQuoteRenderer, )
-    permission_classes = []
-    queryset = Quote.objects.all()
-    serializer_class = QuoteSerializer
-
-    def get_queryset(self, *args, **kwargs):
-        pks = Quote.objects.values_list('pk', flat=True).order_by('id')
-        random_pk = choice(pks)
-
-        return self.queryset.filter(id=random_pk)
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -81,7 +54,22 @@ def random_quote(request):
     }
     return JsonResponse(data)
 
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def get_quote(request):
+    print(request.data)
 
+    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
+    random_pk = choice(pks)
+    quote = Quote.objects.all().filter(id=random_pk)
+    serializer = QuoteSerializer(quote, many=True)
+    data = {
+        "response_type": "in_channel",
+        "text": f"Quote #{serializer.data[0]['id']}",
+        "attachments": [{"text": serializer.data[0]['text']}]
+    }
+    return JsonResponse(data)
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = []
