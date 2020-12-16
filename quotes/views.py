@@ -26,7 +26,7 @@ def random_quote(request):
 @permission_classes([])
 def get_quote(request):
     print(request.body, flush=True)
-    print(request.text, flush=True)
+    print(str(request.body).split('&'), flush=True)
 
     pks = Quote.objects.values_list('pk', flat=True).order_by('id')
     random_pk = choice(pks)
