@@ -54,6 +54,7 @@ class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = QuoteSerializer
 
 
+@require_POST
 class RandomQuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = []
@@ -67,6 +68,7 @@ class RandomQuoteView(generics.ListAPIView):
         return self.queryset.filter(id=random_pk)
 
 
+@require_POST
 class QuoteView(generics.ListAPIView):
     renderer_classes = (SlackSingleQuoteRenderer, )
     permission_classes = []
