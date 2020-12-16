@@ -95,6 +95,7 @@ def search_quote(request):
 @permission_classes([])
 def add_quote(request):
     payload = dict(item.split("=") for item in str(request.body).split('&'))
+    print(payload)
     try:
         added_by_userid = payload['user_id']
         added_by_username = payload['user_name']
