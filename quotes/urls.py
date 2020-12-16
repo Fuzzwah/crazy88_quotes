@@ -7,6 +7,7 @@ from . import views
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('random', views.random_quote),
+    path('quote', views.get_quote),
 ]
 
 app_name = 'quotes'
