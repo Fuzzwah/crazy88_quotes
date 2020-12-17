@@ -98,20 +98,30 @@ def add_quote(request):
     body = str(request.body)
     if body.find('&') == -1:
         payload = unquote(body)
+        try:
+            added_by_userid = payload['user']['id']
+            added_by_username = payload['user']['name']
+            teamid = payload['user']['team_id']
+            quote = payload['message']['text'].replace('+', ' ')
+        except KeyError:
+            data = {
+                "response_type": "in_channel",
+                "text": f"You need to provide a quote to add!",
+            }
+            return JsonResponse(data)
     else:
         payload = dict(item.split("=") for item in body.split('&'))
-    print(payload)
-    try:
-        added_by_userid = payload['user_id']
-        added_by_username = payload['user_name']
-        teamid = payload['team_id']
-        quote = payload['text']
-    except KeyError:
-        data = {
-            "response_type": "in_channel",
-            "text": f"You need to provide a quote to add!",
-        }
-        return JsonResponse(data)
+        try:
+            added_by_userid = payload['user_id']
+            added_by_username = payload['user_name']
+            teamid = payload['team_id']
+            quote = payload['text']
+        except KeyError:
+            data = {
+                "response_type": "in_channel",
+                "text": f"You need to provide a quote to add!",
+            }
+            return JsonResponse(data)
 
     q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
     q.save()
