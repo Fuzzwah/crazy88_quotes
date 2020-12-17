@@ -2,8 +2,8 @@ from random import choice
 from urllib.parse import unquote
 import json
 from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.decorators import api_view
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework import status
 from quotes.serializers import QuoteSerializer
 from quotes.models import Quote
 
@@ -148,4 +148,4 @@ def add_quote_shortcut(request):
     q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
     q.save()
 
-    return HttpResponse(status=200)
+    return HttpResponse("Quote added", status=status.HTTP_200_OK)
