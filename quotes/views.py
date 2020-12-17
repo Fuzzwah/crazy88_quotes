@@ -98,8 +98,8 @@ def search_quote(request):
 def add_quote(request):
     body = str(request.body)
     if body.find('&') == -1:
-        payload = unquote(body)
-        print(json.loads(payload[10:-1]))
+        payload = json.loads(unquote(body)[10:-1])
+        print(payload)
         try:
             added_by_userid = payload['user']['id']
             added_by_username = payload['user']['name']
