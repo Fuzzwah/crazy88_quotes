@@ -95,10 +95,11 @@ def search_quote(request):
 @authentication_classes([])
 @permission_classes([])
 def add_quote(request):
-    if request.body.find('&') == -1:
-        payload = unquote(str(request.body))
+    body = str(request.body)
+    if body.find('&') == -1:
+        payload = unquote(body)
     else:
-        payload = dict(item.split("=") for item in str(request.body).split('&'))
+        payload = dict(item.split("=") for item in body.split('&'))
     print(payload)
     try:
         added_by_userid = payload['user_id']
