@@ -1,7 +1,7 @@
 from random import choice
 from urllib.parse import unquote
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
 from quotes.serializers import QuoteSerializer
@@ -135,3 +135,17 @@ def add_quote(request):
     return JsonResponse(data)
 
 
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def add_quote_shortcut(request):
+    payload = json.loads(unquote(str(request.body))[10:-1])
+    print(payload)
+    added_by_userid = payload['user']['id']
+    added_by_username = payload['user']['name']
+    teamid = payload['user']['team_id']
+    quote = payload['message']['text'].replace('+', ' ')
+    q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
+    q.save()
+
+    return HttpResponse(status=200)

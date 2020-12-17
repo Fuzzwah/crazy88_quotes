@@ -10,6 +10,8 @@ urlpatterns = [
     path('quote', views.get_quote),
     path('search', views.search_quote),
     path('add', views.add_quote),
+    path('add_shortcut', views.add_quote_shortcut),
+
 
 ]
 
