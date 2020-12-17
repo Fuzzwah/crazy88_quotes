@@ -1,4 +1,5 @@
 from random import choice
+from urllib.parse import unquote
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.decorators import api_view
@@ -94,7 +95,10 @@ def search_quote(request):
 @authentication_classes([])
 @permission_classes([])
 def add_quote(request):
-    payload = dict(item.split("=") for item in str(request.body).split('&'))
+    if request.body.find('&') == -1:
+        payload = unquote(str(request.body))
+    else:
+        payload = dict(item.split("=") for item in str(request.body).split('&'))
     print(payload)
     try:
         added_by_userid = payload['user_id']
