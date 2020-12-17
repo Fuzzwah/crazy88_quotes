@@ -96,6 +96,7 @@ def search_quote(request):
 @permission_classes([])
 def add_quote(request):
     body = str(request.body)
+    print(body)
     if body.find('&') == -1:
         payload = unquote(body)
         try:
