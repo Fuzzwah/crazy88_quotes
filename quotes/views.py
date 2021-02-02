@@ -4,18 +4,18 @@ import json
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework import status
-from rest_framework.response import Response
 from quotes.serializers import QuoteSerializer
 from quotes.models import Quote
+from django.db.models import Q
 
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def random_quote(request):
 
-    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
+    pks = Quote.objects.filter(Q(channel='#crazy88') | Q(channel='#slack')).values_list('pk', flat=True).order_by('id')
     random_pk = choice(pks)
-    quote = Quote.objects.all().filter(id=random_pk)
+    quote = Quote.objects.all().filter(Q(channel='#crazy88') | Q(channel='#slack')).filter(id=random_pk)
     serializer = QuoteSerializer(quote, many=True)
     data = {
         "response_type": "in_channel",
@@ -96,6 +96,41 @@ def search_quote(request):
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
+def search_pquote(request):
+    quote_id = False
+    payload_list = str(request.body).split('&')
+    for item in payload_list:
+        key, val = item.split('=')
+        if key == 'text':
+            search_string = val
+            break
+    if not search_string:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a string to search for!",
+        }
+        return JsonResponse(data)
+
+
+    quotes = Quote.objects.all().filter(channel='#crazypoker').filter(text__contains=search_string)
+    serializer = QuoteSerializer(quotes, many=True)
+    try:
+        i = choice(range(len(serializer.data)))
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{serializer.data[i]['id']}",
+            "attachments": [{"text": serializer.data[i]['text']}]
+        }
+    except IndexError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"No quote found containing '{search_string}' in the database",
+        }
+    return JsonResponse(data)
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
 def add_quote(request):
     body = str(request.body)
     if body.find('&') == -1:
@@ -149,4 +184,4 @@ def add_quote_shortcut(request):
     q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
     q.save()
 
-    return Response("Quote added", status=status.HTTP_200_OK)
+    return HttpResponse(status=status.HTTP_200_OK)
