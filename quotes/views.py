@@ -67,7 +67,7 @@ def search_quote(request):
     for item in payload_list:
         key, val = item.split('=')
         if key == 'text':
-            search_string = val
+            search_string = val.replace('+', ' ')
             break
     if not search_string:
         data = {
@@ -102,7 +102,7 @@ def search_pquote(request):
     for item in payload_list:
         key, val = item.split('=')
         if key == 'text':
-            search_string = val
+            search_string = val.replace('+', ' ')
             break
     if not search_string:
         data = {
