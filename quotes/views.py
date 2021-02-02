@@ -77,7 +77,7 @@ def search_quote(request):
         return JsonResponse(data)
 
 
-    quotes = Quote.objects.all().filter(~Q(channel='#crazypoker')).filter(text__contains=search_string)
+    quotes = Quote.objects.all().filter(~Q(channel='#crazypoker')).filter(text__icontains=search_string)
     serializer = QuoteSerializer(quotes, many=True)
     try:
         i = choice(range(len(serializer.data)))
@@ -112,7 +112,7 @@ def search_pquote(request):
         return JsonResponse(data)
 
 
-    quotes = Quote.objects.all().filter(channel='#crazypoker').filter(text__contains=search_string)
+    quotes = Quote.objects.all().filter(channel='#crazypoker').filter(text__icontains=search_string)
     serializer = QuoteSerializer(quotes, many=True)
     try:
         i = choice(range(len(serializer.data)))
