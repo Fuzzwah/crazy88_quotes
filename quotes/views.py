@@ -1,63 +1,187 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext_lazy as _
-from django.db import transaction
-from django.shortcuts import render
-from django.conf import settings
-from rest_framework import viewsets, generics
-from rest_framework.permissions import IsAuthenticated
-from django_tables2 import SingleTableView
-from django.shortcuts import render, HttpResponseRedirect, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.db.models import Max
 from random import choice
+from urllib.parse import unquote
+import json
+from django.http import JsonResponse, HttpResponse
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework import status
+from quotes.serializers import QuoteSerializer
+from quotes.models import Quote
+from django.db.models import Q
 
-from quotes.serializers import (
-    QuoteSerializer,
-)
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def random_quote(request):
 
-from quotes.models import (
-    Quote,
-)
-
-def test(request):
-    resp = {
-        "response_type": "in_channel",
-        "text": "Hello, world",
-            "attachments": [
-                {
-                "text": "Attachment text is here"
-                }
-            ]
-        }
-    return JsonResponse(resp)
-
-def index(request):
-    return HttpResponse("Hi there.")
-
-
-class QuotesViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = Quote.objects.all()
-    serializer_class = QuoteSerializer
-
-
-class RandomQuoteViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
-    pks = Quote.objects.values_list('pk', flat=True).order_by('id')
+    pks = Quote.objects.filter(Q(channel='#crazy88') | Q(channel='#slack')).values_list('pk', flat=True).order_by('id')
     random_pk = choice(pks)
-    serializer_class = QuoteSerializer
-    quote = Quote.objects.get(pk=random_pk)
+    quote = Quote.objects.all().filter(Q(channel='#crazy88') | Q(channel='#slack')).filter(id=random_pk)
+    serializer = QuoteSerializer(quote, many=True)
+    data = {
+        "response_type": "in_channel",
+        "text": f"Quote #{serializer.data[0]['id']}",
+        "attachments": [{"text": serializer.data[0]['text']}]
+    }
+    return JsonResponse(data)
 
-    def get_queryset(self, *args, **kwargs):
-        return self.quote
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def get_quote(request):
+    quote_id = False
+    payload_list = str(request.body).split('&')
+    for item in payload_list:
+        key, val = item.split('=')
+        if key == 'text':
+            quote_id = val
+            break
+    if not quote_id:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a quote number!",
+        }
+        return JsonResponse(data)
 
-class QuoteView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = Quote.objects.all()
-    serializer_class = QuoteSerializer
 
-    def get_queryset(self, *args, **kwargs):
-        return self.queryset.filter(id=self.kwargs.get('id'))
+    quote = Quote.objects.all().filter(id=quote_id)
+    serializer = QuoteSerializer(quote, many=True)
+    try:
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{serializer.data[0]['id']}",
+            "attachments": [{"text": serializer.data[0]['text']}]
+        }
+    except IndexError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{quote_id} not found in the database",
+        }
+    return JsonResponse(data)
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def search_quote(request):
+    quote_id = False
+    payload_list = str(request.body).split('&')
+    for item in payload_list:
+        key, val = item.split('=')
+        if key == 'text':
+            search_string = val.replace('+', ' ')
+            break
+    if not search_string:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a string to search for!",
+        }
+        return JsonResponse(data)
+
+
+    quotes = Quote.objects.all().filter(~Q(channel='#crazypoker')).filter(text__icontains=search_string)
+    serializer = QuoteSerializer(quotes, many=True)
+    try:
+        i = choice(range(len(serializer.data)))
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{serializer.data[i]['id']}",
+            "attachments": [{"text": serializer.data[i]['text']}]
+        }
+    except IndexError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"No quote found containing '{search_string}' in the database",
+        }
+    return JsonResponse(data)
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def search_pquote(request):
+    quote_id = False
+    payload_list = str(request.body).split('&')
+    for item in payload_list:
+        key, val = item.split('=')
+        if key == 'text':
+            search_string = val.replace('+', ' ')
+            break
+    if not search_string:
+        data = {
+            "response_type": "in_channel",
+            "text": f"You need to provide a string to search for!",
+        }
+        return JsonResponse(data)
+
+
+    quotes = Quote.objects.all().filter(channel='#crazypoker').filter(text__icontains=search_string)
+    serializer = QuoteSerializer(quotes, many=True)
+    try:
+        i = choice(range(len(serializer.data)))
+        data = {
+            "response_type": "in_channel",
+            "text": f"Quote #{serializer.data[i]['id']}",
+            "attachments": [{"text": serializer.data[i]['text']}]
+        }
+    except IndexError:
+        data = {
+            "response_type": "in_channel",
+            "text": f"No quote found containing '{search_string}' in the database",
+        }
+    return JsonResponse(data)
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def add_quote(request):
+    body = str(request.body)
+    if body.find('&') == -1:
+        payload = json.loads(unquote(body)[10:-1])
+        print(payload)
+        try:
+            added_by_userid = payload['user']['id']
+            added_by_username = payload['user']['name']
+            teamid = payload['user']['team_id']
+            quote = payload['message']['text'].replace('+', ' ')
+        except KeyError:
+            data = {
+                "response_type": "in_channel",
+                "text": f"You need to provide a quote to add!",
+            }
+            return JsonResponse(data)
+    else:
+        payload = dict(item.split("=") for item in body.split('&'))
+        try:
+            added_by_userid = payload['user_id']
+            added_by_username = payload['user_name']
+            teamid = payload['team_id']
+            quote = payload['text']
+        except KeyError:
+            data = {
+                "response_type": "in_channel",
+                "text": f"You need to provide a quote to add!",
+            }
+            return JsonResponse(data)
+
+    q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
+    q.save()
+
+    data = {
+        "response_type": "in_channel",
+        "text": f"Quote added as #{q.id}",
+    }
+    return JsonResponse(data)
+
+
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([])
+def add_quote_shortcut(request):
+    payload = json.loads(unquote(str(request.body))[10:-1])
+    print(payload)
+    added_by_userid = payload['user']['id']
+    added_by_username = payload['user']['name']
+    teamid = payload['user']['team_id']
+    quote = payload['message']['text'].replace('+', ' ')
+    q = Quote(added_by_userid=added_by_userid, added_by_username=added_by_username, teamid=teamid, text=quote, channel="#slack")
+    q.save()
+
+    return HttpResponse(status=status.HTTP_200_OK)
