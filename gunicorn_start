@@ -1,0 +1,36 @@
+#!/bin/bash
+
+### Define script variables
+### =====================================================================================================================
+
+NAME="crazy88_quotes"                                      # Name of the application
+VIRTUALENV="/home/fuz/crazy88_quotes/.env"                 # Path to virtualenv
+DJANGODIR="/home/fuz/crazy88_quotes"                       # Django Project Directory
+USER=fuz                                                   # the user to run as
+GROUP=fuz  	                                           # the group to run as
+NUM_WORKERS=1                          	                   # No. of worker processes Gunicorn should spawn
+DJANGO_SETTINGS_MODULE=config.settings.local	           # Settings file that Gunicorn should use
+DJANGO_WSGI_MODULE=config.wsgi                             # WSGI module name
+
+### Activate virtualenv and create environment variables
+### =====================================================================================================================
+
+echo "Starting $NAME as `whoami`"
+# Activate the virtual environment
+cd $VIRTUALENV
+source bin/activate
+cd $DJANGODIR
+# Defining the Environment Variables
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DJANGODIR:$PYTHONPATH
+
+
+### Start Gunicorn
+### =====================================================================================================================
+
+exec gunicorn ${DJANGO_WSGI_MODULE}:application \
+        --name $NAME \
+        --workers $NUM_WORKERS \
+        --user=$USER --group=$GROUP \
+        --log-level=debug \
+        --bind=unix:/home/fuz/crazy88_quotes/crazy88_quotes.sock
