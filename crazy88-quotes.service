@@ -1,0 +1,13 @@
+[Unit]
+Description=Crazy88 Quotes
+After=network.target
+
+[Service]
+User=fuz
+Group=fuz
+WorkingDirectory=/home/fuz/crazy88_quotes
+ExecStart=/home/fuz/crazy88_quotes/gunicorn_start
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
