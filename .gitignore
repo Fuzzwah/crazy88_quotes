@@ -8,7 +8,6 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.env/
 .Python
 build/
 develop-eggs/
@@ -157,7 +156,10 @@ typings/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+*.code-workspace
 
+# Local History for devcontainer
+.devcontainer/bash_history
 
 
 
@@ -265,10 +267,10 @@ Session.vim
 # Auto-generated tag files
 tags
 
-### Project template
+# Redis dump file
+dump.rdb
 
+### Project template
 crazy88_quotes/media/
 
 .pytest_cache/
-
-

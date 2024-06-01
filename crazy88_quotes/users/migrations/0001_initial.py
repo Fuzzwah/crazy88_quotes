@@ -1,14 +1,19 @@
 import django.contrib.auth.models
 import django.contrib.auth.validators
-from django.db import migrations, models
 import django.utils.timezone
+from django.db import migrations
+from django.db import models
+
+import crazy88_quotes.users.models
 
 
 class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [("auth", "0008_alter_user_username_max_length")]
+    dependencies = [
+        ("auth", "0012_alter_user_first_name_max_length"),
+    ]
 
     operations = [
         migrations.CreateModel(
@@ -16,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     "id",
-                    models.AutoField(
+                    models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
@@ -27,7 +32,7 @@ class Migration(migrations.Migration):
                 (
                     "last_login",
                     models.DateTimeField(
-                        blank=True, null=True, verbose_name="last login"
+                        blank=True, null=True, verbose_name="last login",
                     ),
                 ),
                 (
@@ -37,8 +42,7 @@ class Migration(migrations.Migration):
                         help_text="Designates that this user has all permissions without explicitly assigning them.",
                         verbose_name="superuser status",
                     ),
-                ),
-                (
+                ),(
                     "username",
                     models.CharField(
                         error_messages={
@@ -54,21 +58,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "first_name",
-                    models.CharField(
-                        blank=True, max_length=30, verbose_name="first name"
-                    ),
-                ),
-                (
-                    "last_name",
-                    models.CharField(
-                        blank=True, max_length=150, verbose_name="last name"
-                    ),
-                ),
-                (
                     "email",
                     models.EmailField(
-                        blank=True, max_length=254, verbose_name="email address"
+                        blank=True, max_length=254, verbose_name="email address",
                     ),
                 ),
                 (
@@ -90,13 +82,13 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now, verbose_name="date joined",
                     ),
                 ),
                 (
                     "name",
                     models.CharField(
-                        blank=True, max_length=255, verbose_name="Name of User"
+                        blank=True, max_length=255, verbose_name="Name of User",
                     ),
                 ),
                 (
@@ -123,10 +115,12 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name_plural": "users",
                 "verbose_name": "user",
+                "verbose_name_plural": "users",
                 "abstract": False,
             },
-            managers=[("objects", django.contrib.auth.models.UserManager())],
-        )
+            managers=[
+                ("objects", django.contrib.auth.models.UserManager()),
+            ],
+        ),
     ]
