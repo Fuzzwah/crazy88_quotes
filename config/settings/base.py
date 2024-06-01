@@ -49,7 +49,7 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default="postgres:///crazy88_quotes",
+        default="postgres:///test",
     ),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
