@@ -49,11 +49,11 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": env.db('DATABASE_TABLE'),
-        "USER": env.db('DATABASE_USER'),
-        "PASSWORD": env.db('DATABASE_PASS'),
-        "HOST": env.db('DATABASE_HOST'),
-        "PORT": env.db('DATABASE_PORT'),
+        "NAME": env('DATABASE_NAME'),
+        "USER": env('DATABASE_USER'),
+        "PASSWORD": env('DATABASE_PASS'),
+        "HOST": env('DATABASE_HOST'),
+        "PORT": env('DATABASE_PORT'),
         'OPTIONS': {
                 'options': '-c search_path=crazy88_quotes_schema',
             },
