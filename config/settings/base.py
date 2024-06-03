@@ -52,7 +52,7 @@ DATABASES = {
         'OPTIONS': {
                 'options': '-c search_path=crazy88_quotes_schema',
                 "service": "crazy88_quotes",
-                "passfile": "/home/fuz/crazy88_quotes/config/settings/.pgpass",
+                "passfile": ".pgpass",
             },
     }
 }
