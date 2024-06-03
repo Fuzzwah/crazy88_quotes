@@ -1,3 +1,4 @@
+# ruff: noqa
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -26,8 +27,8 @@ django.setup()
 
 # -- Project information -----------------------------------------------------
 
-project = "crazy88_quotes"
-copyright = """2020, Rob Crouch"""
+project = "Crazy88 Quotes"
+copyright = """2024, Rob Crouch"""
 author = "Rob Crouch"
 
 

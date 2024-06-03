@@ -9,7 +9,7 @@ DJANGODIR="/home/fuz/crazy88_quotes"                       # Django Project Dire
 USER=fuz                                                   # the user to run as
 GROUP=fuz  	                                           # the group to run as
 NUM_WORKERS=1                          	                   # No. of worker processes Gunicorn should spawn
-DJANGO_SETTINGS_MODULE=config.settings.local	           # Settings file that Gunicorn should use
+DJANGO_SETTINGS_MODULE=config.settings.production          # Settings file that Gunicorn should use
 DJANGO_WSGI_MODULE=config.wsgi                             # WSGI module name
 
 ### Activate virtualenv and create environment variables
@@ -32,5 +32,5 @@ exec gunicorn ${DJANGO_WSGI_MODULE}:application \
         --name $NAME \
         --workers $NUM_WORKERS \
         --user=$USER --group=$GROUP \
-        --log-level=debug \
+        --log-level=error \
         --bind=unix:/home/fuz/crazy88_quotes/crazy88_quotes.sock

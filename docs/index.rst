@@ -1,9 +1,9 @@
-.. crazy88_quotes documentation master file, created by
+.. Crazy88 Quotes documentation master file, created by
    sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to crazy88_quotes's documentation!
+Welcome to Crazy88 Quotes's documentation!
 ======================================================================
 
 .. toctree::
@@ -11,7 +11,6 @@ Welcome to crazy88_quotes's documentation!
    :caption: Contents:
 
    howto
-   pycharm/configuration
    users
 
 
