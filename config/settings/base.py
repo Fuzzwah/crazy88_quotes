@@ -53,7 +53,7 @@ DATABASES = {
         "USER": env.db('DATABASE_USER'),
         "PASSWORD": env.db('DATABASE_PASS'),
         "HOST": env.db('DATABASE_HOST'),
-        "PORT": env.db('5432'),
+        "PORT": env.db('DATABASE_PORT'),
         'OPTIONS': {
                 'options': '-c search_path=crazy88_quotes_schema',
             },
